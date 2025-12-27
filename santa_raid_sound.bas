@@ -83,6 +83,10 @@ Dim Shared imgTree As Long
 Dim Shared imgSnow As Long
 Dim Shared snowW As Long, snowH As Long
 
+' game over
+Dim Shared imgGameOver As Long
+Dim Shared goW As Long, goH As Long
+
 ' distance
 Dim Shared distancePx As Double
 Dim Shared lastKmSpeedup As Integer
@@ -95,6 +99,7 @@ Dim Shared shootCD As Integer
 
 ' music
 Dim Shared sndMusic As Long
+Dim Shared musicVol As Single
 
 
 Screen _NewImage(SW, SH, 32)
@@ -104,14 +109,15 @@ _Limit 60
 ' load music first
 sndMusic = _SndOpen("music.mp3")
 If sndMusic > 0 Then
-    _SndVol sndMusic, 0.4
+    musicVol = 0.3
+    _SndVol sndMusic, musicVol
     _SndLoop sndMusic
 End If
 
 LoadSprites
 
 ' run splash screen for 5 sec
-ShowSplash 5
+ShowSplash
 
 
 InitGame
@@ -140,13 +146,15 @@ Sub LoadSprites
     snowW = _Width(imgSnow)
     snowH = _Height(imgSnow)
 
+    imgGameOver = _LoadImage("game_over.png", 32)
+
+    goW = _Width(imgGameOver)
+    goH = _Height(imgGameOver)
+
+
 End Sub
 
-Sub ShowSplash (seconds As Integer)
-    ' Show splash.png full-screen for N seconds (or until key pressed)
-    Dim t0 As Double
-    t0 = Timer
-
+Sub ShowSplash
     Do
         Cls
         _PutImage (0, 0)-(SW, SH), imgSplash
@@ -155,8 +163,7 @@ Sub ShowSplash (seconds As Integer)
 
         If _KeyHit <> 0 Then Exit Do
         If _KeyDown(27) Then System
-
-    Loop While (Timer - t0) < seconds
+    Loop
 End Sub
 
 Sub InitGame
@@ -251,6 +258,19 @@ Sub HandleInput
 
     If _KeyDown(27) Then System
     If k = Asc("p") Or k = Asc("P") Then PauseScreen
+    If sndMusic > 0 Then
+        If k = 43 Or k = 61 Then ' + albo =
+            musicVol = musicVol + 0.05
+            If musicVol > 1 Then musicVol = 1
+            _SndVol sndMusic, musicVol
+        ElseIf k = 45 Then ' -
+            musicVol = musicVol - 0.05
+            If musicVol < 0 Then musicVol = 0
+            _SndVol sndMusic, musicVol
+        End If
+    End If
+
+
 End Sub
 
 Sub PauseScreen
@@ -673,8 +693,14 @@ Sub Render
 
     ' Game over
     If gameOver Then
-        DrawCenteredText SH / 2 - 20, "~~~       GAME OVER      ~~~", _RGB32(0, 0, 0), _RGB32(255, 80, 80)
-        DrawCenteredText SH / 2 + 10, "~~~ R restart | Esc quit ~~~", _RGB32(0, 0, 0), _RGB32(255, 255, 255)
+        Dim xx As Single, yy As Single
+
+        xx = (SW - goW) / 2
+        yy = (SH - goH) / 2
+
+        _PutImage (xx, yy)-(xx + goW, yy + goH), imgGameOver
+
+        If _KeyDown(82) Or _KeyDown(114) Then InitGame
         If _KeyDown(82) Or _KeyDown(114) Then InitGame
     End If
 
