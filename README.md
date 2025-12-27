@@ -5,7 +5,7 @@ where you can hear him groaning and squealing (he's been snacking on dumplings a
 Along the way, however, you have to watch out for kids wanting more presents and piles of snow (fortunately, someone left some energy-boosting Christmas cake on the road).
 
 I invite everyone interested to try my game "Santa Raid" – a clone of the iconic River Raid for the Atari 2600, but with a Christmas theme 😉 
-The compressed game (Windows 10, 11, 64-bit) can be downloaded and unpacked with source code:
+The compressed game (santa_raid.zip, Windows 10, 11, 64-bit) can be downloaded and unpacked with source code:
 https://github.com/drbaton/SantaRaid
 
 qb64pe build on win11, with music. 
